@@ -15,6 +15,13 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - name: Prepare web files
+        run: |
+          mkdir -p www
+          f=$(find . -name index.html -not -path "./node_modules/*" -not -path "./android/*" | head -n 1)
+          echo "Found: $f"
+          if [ -z "$f" ]; then echo "index.html not found"; exit 1; fi
+          [ "$f" -ef www/index.html ] || cp "$f" www/index.html
       - run: npm install
       - run: npx cap add android
       - run: npx cap sync android
